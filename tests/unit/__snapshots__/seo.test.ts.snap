@@ -1,0 +1,91 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`JSON-LD > builds an article graph 1`] = `
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@id": "https://verifyrishta.com/#organization",
+      "@type": "Organization",
+      "description": "Plain-language guides for Indian families on marriage background verification, matrimonial fraud and checking a rishta respectfully.",
+      "logo": {
+        "@type": "ImageObject",
+        "height": "512",
+        "url": "https://verifyrishta.com/icons/icon-512.png",
+        "width": "512",
+      },
+      "name": "VerifyRishta",
+      "url": "https://verifyrishta.com/",
+    },
+    {
+      "@id": "https://verifyrishta.com/#website",
+      "@type": "WebSite",
+      "inLanguage": "en-IN",
+      "name": "VerifyRishta",
+      "publisher": {
+        "@id": "https://verifyrishta.com/#organization",
+      },
+      "url": "https://verifyrishta.com/",
+    },
+    {
+      "@type": "BlogPosting",
+      "author": {
+        "@id": "https://verifyrishta.com/authors/saurabh#author",
+      },
+      "dateModified": "2026-10-05T00:00:00.000Z",
+      "datePublished": "2026-10-01T00:00:00.000Z",
+      "description": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "headline": "Sample title",
+      "image": "https://verifyrishta.com/og.png",
+      "inLanguage": "en-IN",
+      "mainEntityOfPage": "https://verifyrishta.com/matrimonial-fraud/sample",
+      "publisher": {
+        "@id": "https://verifyrishta.com/#organization",
+      },
+      "wordCount": 1,
+    },
+    {
+      "@id": "https://verifyrishta.com/authors/saurabh#author",
+      "@type": "Person",
+      "jobTitle": "Author",
+      "knowsAbout": [],
+      "name": "Saurabh",
+      "sameAs": [],
+      "url": "https://verifyrishta.com/authors/saurabh",
+      "worksFor": {
+        "@id": "https://verifyrishta.com/#organization",
+      },
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "item": "https://verifyrishta.com/",
+          "name": "Home",
+          "position": 1,
+        },
+        {
+          "@type": "ListItem",
+          "item": "https://verifyrishta.com/matrimonial-fraud",
+          "name": "Matrimonial fraud",
+          "position": 2,
+        },
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A.",
+          },
+          "name": "Q?",
+        },
+      ],
+    },
+  ],
+}
+`;

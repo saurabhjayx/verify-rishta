@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SITE_URL: https://verifyrishta.com
+  NEXT_TELEMETRY_DISABLED: "1"
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4 # version from package.json#packageManager
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - name: Content lint (real articles and test fixtures)
+        run: pnpm content:lint content/ tests/fixtures/content/
+      - run: pnpm test
+
+      # Real articles must compile; this is the build Vercel/AWS will run.
+      - name: Build (real content)
+        run: pnpm build
+
+      # e2e and Lighthouse run against stable test fixtures, not live articles.
+      - name: Build (test fixtures)
+        run: pnpm build:fixtures
+
+      - name: E2E (raw HTML, no browser needed)
+        run: pnpm test:e2e
+        env:
+          CONTENT_DIR: tests/fixtures/content
+
+      - name: Lighthouse CI (mobile, devtools throttling, budgets in lighthouserc.json)
+        run: pnpm dlx @lhci/cli@0.15.1 autorun
+        env:
+          CONTENT_DIR: tests/fixtures/content
+
+      - name: Bundle analysis (Turbopack)
+        if: github.event_name == 'pull_request'
+        run: pnpm next analyze --output
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reports
+          path: |
+            .lighthouseci/
+            playwright-report/
+            .next/diagnostics/analyze/
+          if-no-files-found: ignore

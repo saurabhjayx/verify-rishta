@@ -1,0 +1,4 @@
+*.md
+pnpm-lock.yaml
+src/assets/brand-images.ts
+*.mdx

@@ -1,0 +1,34 @@
+# dependencies
+/node_modules
+
+# next.js build output
+/.next/
+/out/
+/build
+next-env.d.ts
+*.tsbuildinfo
+
+# env files: secrets never committed; the example is
+.env*
+!.env.example
+
+# test and CI reports
+/coverage
+/playwright-report/
+/test-results/
+/blob-report/
+/.lighthouseci/
+# one-off local configs (e.g. Playwright on another port)
+*.tmp.*
+
+# hosting
+.vercel
+
+# logs
+*.log
+
+# OS and editors
+.DS_Store
+*.pem
+.idea/
+.vscode/

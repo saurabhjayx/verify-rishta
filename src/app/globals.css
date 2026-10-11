@@ -1,0 +1,182 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/*
+ * Design tokens: Direction A "Calm clinic".
+ * Every colour is a CSS variable, so dark mode swaps values, not class names.
+ * Contrast (WCAG AA, checked): text 14.2, muted 7.3, trust 7.1, accent 5.7,
+ * button text on accent 6.0 (light); text 14.7, muted 7.3, trust 10.0,
+ * accent 9.0, button text 9.0 (dark).
+ */
+:root {
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --surface-2: #f2efe9;
+  --border: #e4e0d8;
+  --text: #27272a;
+  --muted: #57534e;
+  --trust: #0f5f5a;
+  --trust-soft: #e6f2f0;
+  --accent: #a6460a;
+  --accent-hover: #8a3a08;
+  --accent-ink: #ffffff;
+  --accent-soft: #fbefe6;
+  --warn: #8a5a00;
+  --warn-soft: #fdf4dc;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121414;
+    --surface: #1a1d1d;
+    --surface-2: #202424;
+    --border: #2e3333;
+    --text: #e7e5e4;
+    --muted: #a8a29e;
+    --trust: #6ccfc2;
+    --trust-soft: #14302d;
+    --accent: #f5a25d;
+    --accent-hover: #f8b57c;
+    --accent-ink: #121414;
+    --accent-soft: #33241a;
+    --warn: #e5b45a;
+    --warn-soft: #2e2614;
+  }
+}
+
+@theme inline {
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-heading), ui-serif, Georgia, serif;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-trust: var(--trust);
+  --color-trust-soft: var(--trust-soft);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+
+  /* Reading measure from the brief: 68 characters. */
+  --container-measure: 68ch;
+}
+
+@layer base {
+  html {
+    color-scheme: light dark;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-bg font-sans text-lg leading-[1.7] text-text antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-serif text-text;
+  }
+  :focus-visible {
+    @apply rounded-sm outline-2 outline-offset-2 outline-trust;
+  }
+}
+
+@layer components {
+  /* Article body: typography plugin mapped onto our tokens (works in dark mode too). */
+  .prose-article {
+    @apply prose max-w-measure text-lg leading-[1.7];
+    --tw-prose-body: var(--text);
+    --tw-prose-headings: var(--text);
+    --tw-prose-lead: var(--muted);
+    --tw-prose-links: var(--trust);
+    --tw-prose-bold: var(--text);
+    --tw-prose-counters: var(--muted);
+    --tw-prose-bullets: var(--muted);
+    --tw-prose-hr: var(--border);
+    --tw-prose-quotes: var(--text);
+    --tw-prose-quote-borders: var(--border);
+    --tw-prose-captions: var(--muted);
+    --tw-prose-code: var(--text);
+    --tw-prose-th-borders: var(--border);
+    --tw-prose-td-borders: var(--border);
+  }
+  .prose-article :where(p, li) {
+    line-height: 1.7;
+  }
+  .prose-article :where(h2) {
+    @apply mt-12 mb-4 text-2xl leading-snug font-semibold sm:text-[1.75rem];
+  }
+  .prose-article :where(h3) {
+    @apply mt-8 mb-3 text-xl leading-snug font-semibold;
+  }
+  .prose-article a {
+    @apply decoration-1 underline-offset-[3px];
+  }
+
+  /* Directive blocks from src/lib/markdown/directives.ts */
+  .prose-article aside {
+    @apply my-8 rounded-lg border-l-4 px-5 py-4;
+  }
+  .prose-article aside > :first-child {
+    @apply mt-0;
+  }
+  .prose-article aside > :last-child {
+    @apply mb-0;
+  }
+  .prose-article .directive-label {
+    @apply mb-1 font-sans text-sm font-semibold tracking-wide uppercase;
+  }
+  .prose-article .experience {
+    @apply border-trust bg-trust-soft;
+  }
+  .prose-article .experience .directive-label {
+    @apply text-trust;
+  }
+  .prose-article .callout-warning {
+    @apply border-warn bg-warn-soft;
+  }
+  .prose-article .callout-warning::before {
+    @apply mb-1 block font-sans text-sm font-semibold tracking-wide text-warn uppercase;
+    content: "Red flag";
+  }
+  .prose-article .callout-info {
+    @apply border-trust bg-surface-2;
+  }
+  .prose-article .callout-info::before {
+    @apply mb-1 block font-sans text-sm font-semibold tracking-wide text-trust uppercase;
+    content: "Good to know";
+  }
+  .prose-article .composite {
+    @apply border-border bg-surface-2;
+  }
+  .prose-article .composite .directive-label {
+    @apply text-muted;
+  }
+  .prose-article .composite p:not(.directive-label) {
+    @apply italic;
+  }
+  .prose-article .msp-cta {
+    @apply border-accent bg-accent-soft;
+  }
+  .prose-article .msp-cta .directive-label {
+    @apply text-accent;
+  }
+  /* The CTA link renders as a 48px button. */
+  .prose-article .msp-cta a {
+    @apply inline-flex min-h-12 items-center rounded-md bg-accent px-5 font-sans text-base font-semibold text-accent-ink no-underline hover:bg-accent-hover;
+  }
+
+  .btn-primary {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-accent px-6 text-base font-semibold text-accent-ink hover:bg-accent-hover;
+  }
+  .btn-secondary {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-border px-6 text-base font-semibold text-trust hover:bg-surface-2;
+  }
+  .tap {
+    @apply inline-flex min-h-11 items-center;
+  }
+}
