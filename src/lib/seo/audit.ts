@@ -85,6 +85,11 @@ export function auditHtml(html: string, path: string): string[] {
     "og:locale must be en_IN",
   );
   check(!!meta(html, "name", "twitter:card"), "missing twitter:card");
+  const robots = meta(html, "name", "robots") ?? "";
+  check(
+    /(^|, )follow($|,)/.test(robots),
+    `robots meta must say follow, is "${robots}"`,
+  );
 
   let blocks: unknown[] = [];
   try {

@@ -54,7 +54,11 @@ describe("buildMetadata", () => {
       locale: "en_IN",
       modifiedTime: "2026-10-05T00:00:00.000Z",
     });
-    expect(meta.robots).toBeUndefined();
+    expect(meta.robots).toMatchObject({
+      index: true,
+      follow: true,
+      googleBot: { "max-image-preview": "large" },
+    });
   });
 
   it("emits noindex,follow when asked", () => {

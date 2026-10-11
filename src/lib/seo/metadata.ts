@@ -71,6 +71,19 @@ export function buildMetadata(input: MetadataInput): Metadata {
       description: input.description,
       ...images,
     },
-    robots: input.noindex ? { index: false, follow: true } : undefined,
+    // Explicit on every page. Links are always followed, even on noindex pages.
+    robots: input.noindex
+      ? { index: false, follow: true }
+      : {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+            "max-video-preview": -1,
+          },
+        },
   };
 }
