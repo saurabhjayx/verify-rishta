@@ -9,9 +9,8 @@ type MetadataInput = {
   publishedAt?: Date;
   updatedAt?: Date;
   authorName?: string;
+  /** Share image (JPEG or PNG; social apps do not all accept WebP). Defaults to the site card. */
   image?: { src: string; width: number; height: number; alt: string };
-  /** The route has its own opengraph-image file; do not set images here. */
-  hasOgImageFile?: boolean;
   noindex?: boolean;
 };
 
@@ -25,23 +24,18 @@ const SITE_OG_IMAGE = {
 /** Every page's metadata goes through here: absolute canonical, OG, Twitter, en_IN. */
 export function buildMetadata(input: MetadataInput): Metadata {
   const url = absoluteUrl(input.path);
-  // A child's openGraph replaces the parent's, so pages without their own image
-  // route get the site image explicitly. Routes with an opengraph-image file must
-  // omit the key entirely: even `images: undefined` overrides the file.
-  const image =
-    input.image ?? (input.hasOgImageFile ? undefined : SITE_OG_IMAGE);
-  const images = image
-    ? {
-        images: [
-          {
-            url: absoluteUrl(image.src),
-            width: image.width,
-            height: image.height,
-            alt: image.alt,
-          },
-        ],
-      }
-    : {};
+  // A child's openGraph replaces the parent's, so every page sets its image explicitly.
+  const image = input.image ?? SITE_OG_IMAGE;
+  const images = {
+    images: [
+      {
+        url: absoluteUrl(image.src),
+        width: image.width,
+        height: image.height,
+        alt: image.alt,
+      },
+    ],
+  };
   const common = {
     url,
     title: input.title,

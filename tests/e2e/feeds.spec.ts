@@ -56,10 +56,10 @@ test("llms.txt and llms-full.txt are served as text", async ({ request }) => {
   expect((await request.get("/llms-full.txt")).status()).toBe(200);
 });
 
-test("OG images render as PNG", async ({ request }) => {
+test("generated share cards render as PNG", async ({ request }) => {
   for (const path of [
     "/opengraph-image",
-    "/matrimonial-fraud/draft-red-flags-in-a-biodata/opengraph-image",
+    "/matrimonial-fraud/draft-red-flags-in-a-biodata/og.png",
   ]) {
     const res = await request.get(path);
     expect(res.status(), path).toBe(200);
@@ -99,4 +99,32 @@ test("web app manifest, favicons and icons are served", async ({ request }) => {
   const html = await (await request.get("/")).text();
   expect(html).toContain('<link rel="manifest" href="/manifest.webmanifest"/>');
   expect(html).toMatch(/<img[^>]+brand-mark[^>]+\.webp/);
+});
+
+test("share image: article card without a hero, hero.jpg with one", async ({
+  request,
+}) => {
+  const ogImage = async (path: string) =>
+    /<meta property="og:image" content="([^"]+)"/.exec(
+      await (await request.get(path)).text(),
+    )?.[1];
+  expect(
+    await ogImage("/matrimonial-fraud/draft-red-flags-in-a-biodata"),
+  ).toMatch(/\/matrimonial-fraud\/draft-red-flags-in-a-biodata\/og\.png$/);
+  const heroShare = await ogImage("/marriage-verification-basics");
+  expect(heroShare).toMatch(/\/hero\.jpg$/);
+  const res = await request.get(new URL(heroShare ?? "").pathname);
+  expect(res.headers()["content-type"]).toBe("image/jpeg");
+});
+
+test("hero banner is preloaded, sized and never lazy", async ({ request }) => {
+  const html = await (
+    await request.get("/marriage-verification-basics")
+  ).text();
+  expect(html).toMatch(/<link rel="preload" as="image" fetchPriority="high"/);
+  const img = /<img[^>]*hero\.webp"[^>]*>/.exec(html)?.[0] ?? "";
+  expect(img).toContain('width="1200"');
+  expect(img).toContain('height="630"');
+  expect(img).toContain("800w");
+  expect(img).not.toContain('loading="lazy"');
 });

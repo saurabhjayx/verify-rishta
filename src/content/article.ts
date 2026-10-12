@@ -4,6 +4,16 @@ import { findAuthor, type Author } from "./authors";
 import { findCategory, type Category } from "./categories";
 import { frontmatterSchema, type Frontmatter } from "./schema";
 
+/**
+ * A hero image is three files side by side, named after `heroImage.src`:
+ * <name>.webp (1200w, the page banner), <name>-800.webp (phones) and
+ * <name>.jpg (share image: LinkedIn and some apps reject WebP previews).
+ */
+export function heroFiles(src: string) {
+  const base = src.replace(/\.webp$/, "");
+  return { src, small: `${base}-800.webp`, share: `${base}.jpg` };
+}
+
 export type ParsedArticle = {
   frontmatter: Frontmatter;
   /** MDX body without frontmatter. */

@@ -1,8 +1,44 @@
 import Link from "next/link";
+import { preload } from "react-dom";
 import { CheckCircle } from "@/components/ui/icons";
+import { heroFiles } from "@/content/article";
 import { formatDate } from "@/lib/utils/date";
 import type { Author } from "@/content/authors";
 import type { Post } from "@/content/posts";
+
+type Hero = NonNullable<Post["heroImage"]>;
+
+// The text column is 68ch (~680px) on desktop and full width minus the gutter below.
+const HERO_SIZES = "(min-width: 1024px) 680px, calc(100vw - 2rem)";
+
+/**
+ * Banner and likely LCP element: pre-sized static WebP (800w for phones,
+ * 1200w otherwise), so no image optimizer is needed. Preloaded from <head>
+ * at high priority and never lazy; width/height reserve space (no CLS).
+ */
+function HeroImage({ hero }: { hero: Hero }) {
+  const { src, small } = heroFiles(hero.src);
+  const srcSet = `${small} 800w, ${src} 1200w`;
+  preload(src, {
+    as: "image",
+    imageSrcSet: srcSet,
+    imageSizes: HERO_SIZES,
+    fetchPriority: "high",
+  });
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- static, pre-sized variants; next/image would add an optimizer round trip
+    <img
+      src={src}
+      srcSet={srcSet}
+      sizes={HERO_SIZES}
+      width={hero.width}
+      height={hero.height}
+      alt={hero.alt}
+      fetchPriority="high"
+      className="mt-6 h-auto w-full rounded-lg bg-surface-2"
+    />
+  );
+}
 
 export function ArticleHeader({
   post,
@@ -63,6 +99,7 @@ export function ArticleHeader({
         )}
         <p>{post.readingMinutes} min read</p>
       </div>
+      {post.heroImage && <HeroImage hero={post.heroImage} />}
     </header>
   );
 }

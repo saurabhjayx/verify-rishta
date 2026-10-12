@@ -1,9 +1,11 @@
+import { readFileSync } from "node:fs";
 import { run } from "@mdx-js/mdx";
 import { createElement } from "react";
 import * as runtime from "react/jsx-runtime";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { compileArticle } from "@/lib/markdown/compile";
+import { webpSize } from "@/lib/markdown/rehype-img";
 import { withMspUtm } from "@/lib/seo/utm";
 
 /** Compile, then render the same way ArticleContent does. */
@@ -117,5 +119,34 @@ describe("withMspUtm", () => {
       utm_campaign: "slug-a",
       utm_content: "end",
     });
+  });
+});
+
+describe("images", () => {
+  it("reads WebP dimensions from the file header", () => {
+    expect(
+      webpSize(
+        readFileSync(
+          "public/images/articles/navratri-rituals-across-india/durga-puja-pandal.webp",
+        ),
+      ),
+    ).toEqual({ width: 1200, height: 675 });
+    expect(webpSize(Buffer.from("not an image at all, just some bytes"))).toBe(
+      undefined,
+    );
+  });
+
+  it("gives local body images width and height so they cannot shift layout", async () => {
+    const { html } = await render(
+      "Text.\n\n![A pandal at night](/images/articles/navratri-rituals-across-india/durga-puja-pandal.webp)\n",
+    );
+    expect(html).toContain('width="1200"');
+    expect(html).toContain('height="675"');
+    expect(html).toContain('loading="lazy"');
+  });
+
+  it("leaves remote or missing images unsized", async () => {
+    const { html } = await render("![Missing](/images/nope.webp)\n");
+    expect(html).not.toContain("width=");
   });
 });

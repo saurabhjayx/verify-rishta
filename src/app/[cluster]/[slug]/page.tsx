@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { ArticleBody } from "@/components/article/ArticleBody";
 import { RelatedPosts } from "@/components/article/RelatedPosts";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { heroFiles } from "@/content/article";
 import { getAuthor } from "@/content/authors";
 import { CATEGORIES, getCategory } from "@/content/categories";
 import { getPost, getRelatedPosts, listPosts, postPath } from "@/content/posts";
@@ -43,8 +44,14 @@ export async function generateMetadata({
     publishedAt: post.publishedAt,
     updatedAt: post.updatedAt,
     authorName: getAuthor(post.author)?.name,
-    image: post.heroImage,
-    hasOgImageFile: true,
+    image: post.heroImage
+      ? { ...post.heroImage, src: heroFiles(post.heroImage.src).share }
+      : {
+          src: `${postPath(post)}/og.png`,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
     noindex: post.noindex,
   });
 }
@@ -70,9 +77,7 @@ export default async function ArticlePage({
     { name: category?.name ?? post.category, path: `/${post.category}` },
     { name: post.title, path },
   ];
-  const imageUrl = absoluteUrl(
-    post.heroImage?.src ?? `${path}/opengraph-image`,
-  );
+  const imageUrl = absoluteUrl(post.heroImage?.src ?? `${path}/og.png`);
 
   return (
     <>

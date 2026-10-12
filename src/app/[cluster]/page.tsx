@@ -5,6 +5,7 @@ import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { Container } from "@/components/layout/Container";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PostList } from "@/components/ui/PostCard";
+import { heroFiles } from "@/content/article";
 import { getAuthor } from "@/content/authors";
 import { CATEGORIES, getCategory, type Category } from "@/content/categories";
 import { isCategoryIndexable } from "@/content/indexability";
@@ -58,7 +59,10 @@ export async function generateMetadata({
     type: pillar ? "article" : "website",
     publishedAt: pillar?.publishedAt,
     updatedAt: pillar?.updatedAt,
-    image: pillar?.heroImage,
+    image: pillar?.heroImage && {
+      ...pillar.heroImage,
+      src: heroFiles(pillar.heroImage.src).share,
+    },
     noindex,
   });
 }

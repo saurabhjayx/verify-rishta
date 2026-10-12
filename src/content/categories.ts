@@ -43,6 +43,13 @@ export const CATEGORIES = [
       "Marrying an NRI: what to verify before the wedding, which documents to ask for, and where Indian families can get official help abroad.",
   },
   {
+    // Evergreen URL; only the display name carries the year.
+    slug: "navratri",
+    name: "Navratri 2026",
+    description:
+      "The meaning, stories and customs of Navratri: the nine forms of Maa Durga, fasting, festival colours and how the festival is celebrated across India.",
+  },
+  {
     slug: "milne-se-pehle",
     name: "Milne Se Pehle",
     description:
