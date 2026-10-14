@@ -1,6 +1,12 @@
 import { CATEGORIES } from "@/content/categories";
 import { listPosts, postPath } from "@/content/posts";
-import { SITE_DESCRIPTION, SITE_NAME, absoluteUrl } from "@/lib/seo/site";
+import { SUPPORT_EMAIL } from "@/lib/legal";
+import {
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  absoluteUrl,
+  siteAbout,
+} from "@/lib/seo/site";
 
 /** llmstxt.org format: summary, then each topic with its indexable posts. */
 export async function GET() {
@@ -16,7 +22,8 @@ export async function GET() {
   const body = [
     `# ${SITE_NAME}`,
     `> ${SITE_DESCRIPTION}`,
-    `${SITE_NAME} is an independent guide to marriage background verification in India. Full text of key pages: ${absoluteUrl("/llms-full.txt")}`,
+    siteAbout(SUPPORT_EMAIL),
+    `Full text of key pages: ${absoluteUrl("/llms-full.txt")}`,
     ...sections,
   ].join("\n\n");
 
