@@ -31,6 +31,16 @@ const heading = Noto_Serif({
 export const metadata: Metadata = {
   metadataBase: new URL(absoluteUrl("/")),
   applicationName: SITE_NAME,
+  // Served from public/ so the URLs carry no ?hash query string (the app/ file
+  // convention appends one), ruling it out while Google's favicon in search
+  // results is pending. Keep sizes in sync with the files.
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48", type: "image/x-icon" },
+      { url: "/icon.png", sizes: "96x96", type: "image/png" },
+    ],
+    apple: { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+  },
   alternates: { types: { "application/rss+xml": absoluteUrl("/feed.xml") } },
 };
 
